@@ -11,7 +11,7 @@ pub trait Flying {
     fn API(&self);
     //fn enter_data();
     fn enter_data()->Vec<HelicopterData>;
-    fn fly_helicopter() ->i32;
+    fn fly_helicopter(copters: &mut Vec<HelicopterData>);
 }
 
 impl Flying for HelicopterData {
@@ -19,7 +19,7 @@ impl Flying for HelicopterData {
         println!("In API");
         //add copter list here and see if return works
         let mut _copter_list:Vec<HelicopterData> = Self::enter_data();
-        println!("API calling fly is {}", Self::fly_helicopter());
+        Self::fly_helicopter(&mut _copter_list);
         //Self::enter_data();
 
         for copter in _copter_list {
@@ -63,26 +63,54 @@ impl Flying for HelicopterData {
        copter_list
     }
 
-    fn fly_helicopter() ->i32 {
-        5
+    fn fly_helicopter(copters: &mut Vec<HelicopterData>) {
+
+        while copters.len() > 0 {
+            let mut i = 0;
+            while i < copters.len() {
+                if copters[i].visibility < 60 {
+                    println!("Not safe to fly");
+                    copters.remove(i);
+                } else if copters[i].fuel >= 10 {
+                    println!("Flying copter {}...now with fuel {}%",i+1, copters[i].fuel);
+                    copters[i].fuel = copters[i].fuel - 2;
+                } else {
+                    println!("Low fuel {}% landing now", copters[i].fuel);
+                    copters.remove(i);
+                }
+                i += 1;
+            }
+        }
+        /*
+        //while copters.len() > 0 {
+            for copter in copters.iter_mut() {
+                if copter.visibility < 60 {
+                    println!("Not safe to fly");
+                } else if copter.fuel >= 10 {
+                    println!("Flying...now with fuel {}%", copter.fuel);
+                    copter.fuel - 2;
+                } else {
+                    println!("Low fuel {}% landing now", copter.fuel);
+                    //copters.pop();
+                }
+            }
+        //}*/
     }
 }
 
 
 fn main() {
-
+    println!("Hello, world!");
     let helicopter = HelicopterData {               //debug struct test
         fuel: 10,
         visibility: 75,
     };
 
+
     helicopter.API();
-    //println!("Test  Enter_date2: ");
 
 
-    println!("Hello, world!");
-    //println!("My helicopter test {:#?}",helicopter );   //debug line
-    //io_test();
+
 }
 
 fn io_test () {
